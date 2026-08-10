@@ -1,0 +1,33 @@
+# ====================================================================
+# DIPA-Bot — Chatbot Akademik UNDIPA
+# Abaikan file dokumen akademik hasil upload admin (.pdf, .docx, dll)
+# agar tidak ikut masuk ke repository git.
+# ====================================================================
+
+# File konfigurasi rahasia (WAJIB diabaikan), kecuali template contoh
+.env
+.env.*
+!.env.example
+
+# Abaikan SEMUA isi folder unduhan, kecuali file proteksi .htaccess
+assets/downloads/*
+!assets/downloads/.htaccess
+
+# File sistem bawaan OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# File log & sementara (opsional)
+*.log
+*.tmp
+
+# Docker (khusus lokal — hanya dipakai di laptop, tidak untuk di-push)
+Dockerfile
+docker-compose.yml
+docker-compose.yaml
+docker-compose.*.yml
+docker-compose.*.yaml
+init-perms.sh
+000-default.conf
+.dockerignore

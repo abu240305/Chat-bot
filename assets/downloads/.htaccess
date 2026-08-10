@@ -1,0 +1,28 @@
+# Blokir eksekusi PHP di folder unduhan (Anti Arbitrary File Upload / Shell)
+<Files *>
+    php_flag engine off
+</Files>
+
+# Hanya izinkan akses langsung ke file dokumen akademik
+<FilesMatch "\.(pdf|docx|doc|xlsx|xls|pptx|ppt)$">
+    php_flag engine off
+    Order allow,deny
+    Allow from all
+    Satisfy all
+</FilesMatch>
+
+# Tolak semua file script yang berbahaya
+<FilesMatch "\.(php|php3|php4|php5|php7|phtml|pht|phar|cgi|pl|py|jsp|asp|aspx|sh|htaccess)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Nonaktifkan handler PHP Apache (Apache 2.4 + mod_php / PHP-FPM)
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+SetHandler default-handler
+RemoveHandler .php .phtml .pht .phar
