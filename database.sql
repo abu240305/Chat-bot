@@ -157,5 +157,18 @@ CREATE INDEX idx_term ON tb_vektor_tfidf(term);
 CREATE INDEX idx_id_pengetahuan ON tb_vektor_tfidf(id_pengetahuan);
 
 -- ====================================================================
+-- TABEL 6: tb_pengaturan (Pengaturan Teks Sistem — anti hardcode)
+-- ====================================================================
+CREATE TABLE tb_pengaturan (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nama VARCHAR(50) NOT NULL UNIQUE,
+    nilai TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO tb_pengaturan (nama, nilai) VALUES
+('greeting', 'Halo! Saya DIPA-Bot, asisten virtual layanan akademik Universitas Dipa Makassar.\nAda yang bisa saya bantu? Silakan tanyakan seputar KRS, Jadwal Kuliah, UAS, Skripsi, atau topik akademik lainnya.'),
+('fallback', 'Maaf, DIPA-Bot belum memahami pertanyaan tersebut. Silakan tanyakan seputar KRS, Jadwal Kuliah, UAS, Skripsi, atau topik akademik lainnya.');
+
+-- ====================================================================
 -- SELESAI
 -- ====================================================================

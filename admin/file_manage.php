@@ -8,8 +8,11 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/csrf.php';
+require_once __DIR__ . '/../config/validator.php';
 
 $db = Database::getInstance()->getConnection();
+
+$adminNama = isset($_SESSION['admin_nama']) ? htmlspecialchars($_SESSION['admin_nama'], ENT_QUOTES, 'UTF-8') : 'Admin';
 
 $uploadDir = __DIR__ . '/../assets/downloads/';
 $maxFileSize = 10 * 1024 * 1024;
@@ -30,49 +33,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($aksi === 'upload') {
         requireCsrfToken();
 
-        if (!isset($_FILES['berkas']) || $_FILES['berkas']['error'] === UPLOAD_ERR_NO_FILE) {
-            $pesan = 'Silakan pilih file terlebih dahulu.';
+        $valErr = valFileUpload(isset($_FILES['berkas']) ? $_FILES['berkas'] : null, $maxFileSize, $allowedExt, $allowedMime);
+
+        if ($valErr !== '') {
+            $pesan = $valErr;
             $pesanTipe = 'error';
         } else {
             $file = $_FILES['berkas'];
 
-            if ($file['error'] !== UPLOAD_ERR_OK) {
-                $pesan = 'Terjadi kesalahan saat upload file.';
-                $pesanTipe = 'error';
-            } elseif ($file['size'] > $maxFileSize) {
-                $pesan = 'Ukuran file melebihi batas maksimal 10MB.';
-                $pesanTipe = 'error';
-            } elseif ($file['size'] <= 0) {
-                $pesan = 'File kosong.';
-                $pesanTipe = 'error';
+            $originalName = basename($file['name']);
+            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+            $newName = md5(uniqid(rand(), true)) . '_' . time() . '.' . $ext;
+            $targetPath = $uploadDir . $newName;
+
+            if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                tapisFile($targetPath);
+                $pesan = 'File berhasil diunggah. <strong>Nama file: ' . htmlspecialchars($newName, ENT_QUOTES, 'UTF-8') . '</strong>. Gunakan nama ini pada menu Kelola Q&A.';
             } else {
-                $originalName = basename($file['name']);
-                $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-
-                if (!in_array($ext, $allowedExt)) {
-                    $pesan = 'Format file tidak diizinkan. Hanya .pdf dan .docx.';
-                    $pesanTipe = 'error';
-                } else {
-                    $finfo = new finfo(FILEINFO_MIME_TYPE);
-                    $mimeType = $finfo->file($file['tmp_name']);
-
-                    if (!in_array($mimeType, $allowedMime)) {
-                        $pesan = 'Isi file tidak valid (MIME: ' . htmlspecialchars($mimeType, ENT_QUOTES, 'UTF-8') . '). Hanya PDF dan DOCX yang diizinkan.';
-                        $pesanTipe = 'error';
-                    } else {
-                        $newName = md5(uniqid(rand(), true)) . '_' . time() . '.' . $ext;
-
-                        $targetPath = $uploadDir . $newName;
-
-                        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                            tapisFile($targetPath);
-                            $pesan = 'File berhasil diunggah. <strong>Nama file: ' . htmlspecialchars($newName, ENT_QUOTES, 'UTF-8') . '</strong>. Gunakan nama ini pada menu Kelola Q&A.';
-                        } else {
-                            $pesan = 'Gagal memindahkan file ke server.';
-                            $pesanTipe = 'error';
-                        }
-                    }
-                }
+                $pesan = 'Gagal memindahkan file ke server.';
+                $pesanTipe = 'error';
             }
         }
     }
@@ -133,43 +113,60 @@ function tapisFile($filePath) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola File - DIPA-Bot Admin</title>
-    <link rel="stylesheet" href="../assets/css/admin.css">
-    <style>
-        .table-wrap { overflow-x: auto; }
-        .btn-sm { padding: 8px 12px; font-size: 12px; width: auto; border-radius: 6px; text-decoration: none; display: inline-block; }
-        .btn-blue { background: var(--deep-blue); color: #fff; }
-        .btn-red { background: var(--red-alert); color: #fff; border: none; cursor: pointer; }
-        .btn-gold { background: var(--gold-accent); color: #fff; border: none; cursor: pointer; font-size: 14px; }
-        .btn-sm:hover { opacity: 0.9; }
-        table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
-        table.data th, table.data td { padding: 12px; text-align: left; border-bottom: 1px solid var(--gray-border); vertical-align: middle; }
-        table.data th { background: var(--off-white); font-weight: 600; white-space: nowrap; }
-        .file-size { color: var(--gray-light); font-size: 12px; }
-        .msg-success { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
-        .msg-error { background: #FEE2E2; color: var(--red-alert); border: 1px solid #FECACA; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
-        .upload-box { border: 2px dashed var(--gray-border); border-radius: 12px; padding: 32px 24px; text-align: center; }
-        .upload-note { font-size: 12px; color: var(--gray-light); margin-top: 8px; line-height: 1.6; }
-        .error-text { color: var(--red-alert); }
-        .inline-form { display: inline; }
-    </style>
+    <link rel="stylesheet" href="../assets/css/admin.css?v=5">
 </head>
 <body>
 <div class="admin-container">
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2 class="sidebar-title">DIPA-Bot Admin</h2>
-            <p class="sidebar-subtitle">Panel Pengelola</p>
+        <div class="sidebar-brand">
+            <div class="brand-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="brand-text">
+                <h2 class="sidebar-title">DIPA-Bot</h2>
+                <p class="sidebar-subtitle">Admin UNDIPA</p>
+            </div>
         </div>
         <ul class="sidebar-menu">
             <li><a href="dashboard.php"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>Dashboard</a></li>
             <li><a href="qa_manage.php"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>Kelola Q&A</a></li>
             <li><a href="file_manage.php" class="active"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>Kelola File</a></li>
             <li><a href="logs.php"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>Log Percakapan</a></li>
+            <li><a href="change_password.php"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>Ubah Password</a></li>
+        
         </ul>
+        <div class="sidebar-user">
+            <div class="user-avatar"><?php echo strtoupper(substr($adminNama, 0, 1)); ?></div>
+            <div class="user-meta">
+                <span class="user-name"><?php echo $adminNama; ?></span>
+                <span class="user-role">Administrator</span>
+            </div>
+        </div>
+
         <a href="logout.php" class="logout-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>Logout</a>
     </aside>
 
+    <div class="sidebar-backdrop"></div>
+
     <main class="main-content">
+        <div class="topbar">
+            <button type="button" class="hamburger" aria-label="Buka menu">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <nav class="breadcrumb">
+                <a href="dashboard.php">Dashboard</a>
+                <span>/</span>
+                <span class="current">Kelola File</span>
+            </nav>
+            <div class="user-chip">
+                <div class="chip-avatar"><?php echo strtoupper(substr($adminNama, 0, 1)); ?></div>
+                <div class="chip-meta">
+                    <span class="chip-name"><?php echo $adminNama; ?></span>
+                    <span class="chip-role">Administrator</span>
+                </div>
+            </div>
+        </div>
+
         <div class="content-header">
             <h1 class="content-title">Kelola File</h1>
             <p class="content-subtitle">Unggah dokumen akademik (.pdf / .docx) untuk dilampirkan pada jawaban DIPA-Bot.</p>
@@ -181,35 +178,12 @@ function tapisFile($filePath) {
             </div>
         <?php endif; ?>
 
-        <div class="card" style="max-width:640px;">
-            <div class="card-header">
-                <h2 class="card-title">Upload Dokumen Baru</h2>
-            </div>
-
-            <form method="POST" action="file_manage.php" enctype="multipart/form-data">
-                <?php echo csrfField(); ?>
-                <input type="hidden" name="aksi" value="upload">
-                <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $maxFileSize; ?>">
-
-                <div class="upload-box">
-                    <p style="margin-bottom: 12px; color: var(--dark-slate);">Pilih file dari komputer Anda</p>
-                    <input type="file" name="berkas" id="berkas" accept=".pdf,.docx" required>
-                    <p class="upload-note">
-                        Format yang diizinkan: <strong>.pdf, .docx</strong><br>
-                        Ukuran maksimal: <strong>10 MB</strong><br>
-                        File akan di-rename otomatis dengan nama acak (hash) demi keamanan.
-                    </p>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-gold btn-sm" style="margin-top:16px; padding: 12px 32px; font-size: 14px;">Upload Sekarang</button>
-            </form>
-        </div>
-
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">Daftar File Tersimpan</h2>
-                <p class="content-subtitle">Folder: <code>assets/downloads/</code></p>
+                <button type="button" class="btn btn-gold btn-inline" onclick="openModal('uploadModal')">+ Upload Dokumen</button>
             </div>
+            <p class="content-subtitle" style="margin-bottom:14px;">Folder: <code>assets/downloads/</code></p>
 
             <div class="table-wrap">
                 <table class="data">
@@ -253,5 +227,70 @@ function tapisFile($filePath) {
         </div>
     </main>
 </div>
+
+<!-- MODAL UPLOAD FILE -->
+<div class="modal-overlay" id="uploadModal">
+    <div class="modal modal-sm">
+        <div class="modal-header">
+            <h2 class="card-title">Upload Dokumen Baru</h2>
+            <button type="button" class="modal-close" onclick="closeModal('uploadModal')" aria-label="Tutup">&times;</button>
+        </div>
+
+        <form method="POST" action="file_manage.php" enctype="multipart/form-data">
+            <?php echo csrfField(); ?>
+            <input type="hidden" name="aksi" value="upload">
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $maxFileSize; ?>">
+
+            <div class="upload-box">
+                <p style="margin-bottom: 12px; color: var(--dark-slate);">Pilih file dari komputer Anda</p>
+                <input type="file" name="berkas" id="berkas" accept=".pdf,.docx" required>
+                <p class="upload-note">
+                    Format yang diizinkan: <strong>.pdf, .docx</strong><br>
+                    Ukuran maksimal: <strong>10 MB</strong><br>
+                    File akan di-rename otomatis dengan nama acak (hash) demi keamanan.
+                </p>
+            </div>
+
+            <div class="file-preview">
+                <span class="fp-icon">&#128196;</span>
+                <span class="fp-name"></span>
+                <span class="fp-size"></span>
+                <button type="button" class="fp-remove" title="Hapus/Ganti file">&times;</button>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button type="submit" class="btn btn-gold btn-inline">Upload Sekarang</button>
+                <button type="button" class="btn btn-sm btn-red" onclick="closeModal('uploadModal')">Batal</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+    var m = document.getElementById(id);
+    if (m && m.classList.contains('dirty')) {
+        if (!confirm('Ada perubahan yang belum disimpan. Tetap tutup?')) {
+            return;
+        }
+    }
+    if (m) {
+        m.classList.remove('open');
+        m.classList.remove('dirty');
+    }
+}
+
+document.getElementById('uploadModal').addEventListener('click', function (e) {
+    if (e.target === this) {
+        closeModal('uploadModal');
+    }
+});
+</script>
+<script src="../assets/js/admin.js"></script>
+
 </body>
 </html>

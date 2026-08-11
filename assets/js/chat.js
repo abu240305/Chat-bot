@@ -9,13 +9,23 @@ const quickReplies = document.querySelectorAll('.quick-reply-btn');
 let isProcessing = false;
 
 userInput.addEventListener('input', function() {
+    if (this.value.length > 250) {
+        this.value = this.value.slice(0, 250);
+    }
+
+    const raw = this.value.length;
     const length = this.value.trim().length;
-    charCount.textContent = this.value.length;
-    
+
+    charCount.textContent = raw;
+    charCount.classList.toggle('warn', raw > 200 && raw <= 250);
+    charCount.classList.toggle('error', raw === 250);
+
     if (length > 0 && length <= 250 && !isProcessing) {
         sendBtn.disabled = false;
+        sendBtn.title = '';
     } else {
         sendBtn.disabled = true;
+        sendBtn.title = length === 0 ? 'Ketik pertanyaan terlebih dahulu' : '';
     }
 });
 
@@ -47,6 +57,29 @@ quickReplies.forEach(btn => {
         userInput.dispatchEvent(new Event('input'));
         sendMessage(text);
     });
+});
+
+const resetBtn = document.getElementById('resetChat');
+resetBtn.addEventListener('click', function() {
+    document.querySelectorAll('#chatBody .message-wrapper').forEach(el => {
+        if (el.id !== 'greetingMsg') {
+            el.remove();
+        }
+    });
+
+    const typing = document.getElementById('typingIndicator');
+    if (typing) {
+        typing.remove();
+    }
+
+    isProcessing = false;
+    sendBtn.disabled = true;
+    userInput.disabled = false;
+    userInput.value = '';
+    charCount.textContent = '0';
+    quickReplies.forEach(btn => btn.style.display = '');
+    userInput.focus();
+    scrollToBottom();
 });
 
 function sendMessage(message) {
@@ -83,6 +116,9 @@ function sendMessage(message) {
             appendBotMessage(data.jawaban, data.file_lampiran);
         } else {
             appendBotMessage(data.message || 'Maaf, terjadi kesalahan sistem.');
+            if (data.message && data.message.indexOf('Terlalu banyak') !== -1) {
+                showToast(data.message);
+            }
         }
         
         isProcessing = false;
@@ -93,7 +129,7 @@ function sendMessage(message) {
         removeTypingIndicator();
         console.error('Error:', error);
         showToast('Koneksi gagal. Periksa jaringan internet Anda.');
-        appendBotMessage('Maaf, koneksi ke server gagal. Silakan coba lagi.');
+        appendRetryMessage(message);
         
         isProcessing = false;
         userInput.disabled = false;
@@ -187,7 +223,48 @@ function removeTypingIndicator() {
 }
 
 function scrollToBottom() {
-    chatBody.scrollTop = chatBody.scrollHeight;
+    chatBody.scrollTo({
+        top: chatBody.scrollHeight,
+        behavior: 'smooth'
+    });
+}
+
+function appendRetryMessage(text) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'message-wrapper bot-message bubble-error';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+
+    const p = document.createElement('p');
+    p.textContent = 'Maaf, koneksi ke server gagal. Pesanmu belum terkirim.';
+    bubble.appendChild(p);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'retry-btn';
+    btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+        Coba Lagi
+    `;
+    btn.addEventListener('click', function() {
+        wrapper.remove();
+        sendMessage(text);
+    });
+    bubble.appendChild(btn);
+
+    wrapper.appendChild(bubble);
+
+    const time = document.createElement('span');
+    time.className = 'message-time';
+    time.textContent = getCurrentTime();
+    wrapper.appendChild(time);
+
+    chatBody.appendChild(wrapper);
+    scrollToBottom();
 }
 
 function getCurrentTime() {

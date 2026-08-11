@@ -1,41 +1,116 @@
+/* ====================================================================
+   DIPA-Bot — Chat UI Stylesheet
+   Desain modern ala Chat AI (ChatGPT / Claude / Gemini):
+   layout lapang, glassmorphism, mobile-first responsive.
+   Warna identitas UNDIPA: Deep Blue #1E3A8A · Gold #D97706 · Red #DC2626
+   ==================================================================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Cegah geser kiri-kanan & overscroll lintas platform */
+html,
+body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    overscroll-behavior: none;
+}
+
 :root {
     --deep-blue: #1E3A8A;
+    --blue-dark: #172a63;
+    --blue-mid: #3b5bd0;
+    --blue-light: #6d8bff;
     --red-alert: #DC2626;
     --gold-accent: #D97706;
     --off-white: #F8FAFC;
     --white: #FFFFFF;
     --dark-slate: #0F172A;
     --gray-light: #94A3B8;
+    --gray-soft: #F1F5F9;
     --gray-border: #E2E8F0;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.10);
+    --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.18);
 }
 
+/* ------------------------------------------------------------------
+   1) LAYOUT & HALAMAN
+   ------------------------------------------------------------------ */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--dark-slate);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 20px;
+    background: linear-gradient(145deg, #eef2ff 0%, #f8fafc 40%, #eef4ff 100%);
+    touch-action: manipulation;
+    -webkit-font-smoothing: antialiased;
 }
 
+/* Dekorasi lembut di belakang container */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    z-index: 0;
+    pointer-events: none;
+}
+
+body::before {
+    width: 420px;
+    height: 420px;
+    max-width: 100vw;
+    max-height: 100vh;
+    top: -120px;
+    left: -80px;
+    background: radial-gradient(circle, rgba(109, 139, 255, 0.45), transparent 70%);
+}
+
+body::after {
+    width: 380px;
+    height: 380px;
+    max-width: 100vw;
+    max-height: 100vh;
+    bottom: -100px;
+    right: -60px;
+    background: radial-gradient(circle, rgba(217, 119, 6, 0.30), transparent 70%);
+}
+
+/* ------------------------------------------------------------------
+   2) CONTAINER CHAT — Glassmorphism
+   ------------------------------------------------------------------ */
 .chat-container {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 480px;
-    height: 95vh;
-    max-height: 720px;
-    background: var(--white);
+    max-width: 900px;
+    min-width: 0;
+    height: min(92vh, 880px);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 16px;
     box-shadow: var(--shadow-lg);
     display: flex;
@@ -43,343 +118,450 @@ body {
     overflow: hidden;
 }
 
+/* ------------------------------------------------------------------
+   3) HEADER CHAT
+   ------------------------------------------------------------------ */
 .chat-header {
-    background: var(--deep-blue);
-    color: var(--white);
-    padding: 16px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: var(--shadow-sm);
+    gap: 12px;
+    padding: 18px 24px;
+    color: var(--white);
+    background: linear-gradient(120deg, var(--deep-blue) 0%, var(--blue-mid) 70%, var(--blue-light) 120%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+    min-width: 0;
 }
 
 .logo-avatar {
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.2);
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
 }
 
 .logo-avatar svg {
     width: 24px;
     height: 24px;
+    color: var(--white);
 }
 
 .header-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
 }
 
 .header-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 700;
     letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .header-subtitle {
-    font-size: 11px;
+    font-size: 11.5px;
     opacity: 0.9;
     font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+/* Status online berdenyut */
 .status-indicator {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    padding: 6px 12px;
+    border-radius: 999px;
     font-size: 11px;
+    flex-shrink: 0;
 }
 
 .status-dot {
-    width: 8px;
-    height: 8px;
-    background: #10B981;
+    width: 9px;
+    height: 9px;
+    background: #34D399;
     border-radius: 50%;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+    animation: pulseDot 1.8s infinite;
 }
 
 .status-text {
-    font-size: 11px;
     font-weight: 500;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.reset-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.reset-btn:hover {
+    background: rgba(255, 255, 255, 0.26);
+    transform: rotate(-180deg);
+}
+
+.reset-btn:active {
+    transform: scale(0.92);
+}
+
+.reset-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+@keyframes pulseDot {
+    0%   { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+    70%  { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+/* ------------------------------------------------------------------
+   4) AREA PERCAKAPAN
+   ------------------------------------------------------------------ */
 .chat-body {
     flex: 1;
-    background: var(--off-white);
-    padding: 20px;
     overflow-y: auto;
+    padding: 24px 26px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-}
-
-.chat-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.chat-body::-webkit-scrollbar-track {
+    gap: 18px;
+    scroll-behavior: smooth;
     background: transparent;
 }
 
+/* Scrollbar halus */
+.chat-body::-webkit-scrollbar { width: 6px; }
+.chat-body::-webkit-scrollbar-track { background: transparent; }
 .chat-body::-webkit-scrollbar-thumb {
-    background: var(--gray-light);
+    background: rgba(148, 163, 184, 0.5);
     border-radius: 10px;
 }
 
+/* ------------------------------------------------------------------
+   5) BUBBLE PERCAKAPAN
+   ------------------------------------------------------------------ */
 .message-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    animation: fadeIn 0.3s ease-in;
+    gap: 6px;
+    animation: fadeSlide 0.35s ease;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Pesan BOT: avatar kecil kiri, teks rata kiri (layout grid) */
 .bot-message {
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    column-gap: 10px;
+    align-items: start;
 }
 
+.bot-message .message-bubble {
+    background: var(--gray-soft);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow-sm);
+    color: var(--dark-slate);
+    border-bottom-left-radius: 6px;
+}
+
+/* Avatar kecil bot (CSS-only) */
+.bot-message::before {
+    content: '';
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--deep-blue), var(--blue-light));
+    box-shadow: 0 2px 6px rgba(30, 58, 138, 0.35);
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: start;
+}
+
+.bot-message .message-bubble { grid-column: 2; grid-row: 1; }
+.bot-message .message-time   { grid-column: 2; grid-row: 2; }
+
+/* Pesan USER: biru UNDIPA, kanan */
 .user-message {
     align-items: flex-end;
 }
 
-.message-bubble {
-    max-width: 85%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    line-height: 1.5;
-    word-wrap: break-word;
-}
-
-.bot-message .message-bubble {
-    background: var(--white);
-    color: var(--dark-slate);
-    border: 1px solid var(--gray-border);
-    border-bottom-left-radius: 4px;
-}
-
 .user-message .message-bubble {
-    background: var(--deep-blue);
+    background: linear-gradient(135deg, var(--deep-blue) 0%, var(--blue-mid) 100%);
     color: var(--white);
-    border-bottom-right-radius: 4px;
+    box-shadow: 0 6px 16px rgba(30, 58, 138, 0.28);
+    border-bottom-right-radius: 6px;
+}
+
+.message-bubble {
+    max-width: 78%;
+    padding: 13px 18px;
+    border-radius: 16px;
+    line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    backdrop-filter: blur(4px);
 }
 
 .message-bubble p {
     margin: 0;
-    padding: 4px 0;
+    padding: 3px 0;
 }
 
-.message-bubble strong {
-    font-weight: 600;
-}
+.message-bubble strong { font-weight: 700; }
 
+/* Waktu: redup, rapi di pojok */
 .message-time {
     font-size: 10px;
     color: var(--gray-light);
+    opacity: 0.65;
     padding: 0 8px;
+    letter-spacing: 0.2px;
 }
 
+.bot-message .message-time { align-self: flex-start; }
+.user-message .message-time { align-self: flex-end; }
+
+/* Tombol unduh dokumen */
 .download-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--gold-accent);
+    background: linear-gradient(120deg, var(--gold-accent), #f59e0b);
     color: var(--white);
-    padding: 10px 16px;
-    border-radius: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 600;
-    margin-top: 8px;
-    transition: all 0.2s;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .download-btn:hover {
-    background: #B45309;
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 8px 20px rgba(217, 119, 6, 0.45);
 }
 
+.download-btn svg { width: 16px; height: 16px; }
+
+/* ------------------------------------------------------------------
+   6) TYPING INDICATOR
+   ------------------------------------------------------------------ */
 .typing-indicator {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 12px 16px;
-    background: var(--white);
-    border: 1px solid var(--gray-border);
-    border-radius: 12px;
-    border-bottom-left-radius: 4px;
-    max-width: 70px;
+    gap: 5px;
+    padding: 14px 18px;
+    background: var(--gray-soft);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    border-bottom-left-radius: 6px;
+    box-shadow: var(--shadow-sm);
 }
 
 .typing-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     background: var(--gray-light);
     border-radius: 50%;
     animation: typing 1.4s infinite;
 }
 
-.typing-dot:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-dot:nth-child(3) {
-    animation-delay: 0.4s;
-}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes typing {
-    0%, 60%, 100% {
-        transform: translateY(0);
-        opacity: 0.7;
-    }
-    30% {
-        transform: translateY(-10px);
-        opacity: 1;
-    }
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+    30%           { transform: translateY(-5px); opacity: 1; background: var(--blue-mid); }
 }
 
+/* ------------------------------------------------------------------
+   7) QUICK REPLY CHIPS
+   ------------------------------------------------------------------ */
 .quick-replies {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 2px;
 }
 
 .quick-reply-btn {
-    background: var(--white);
+    background: rgba(30, 58, 138, 0.06);
     color: var(--deep-blue);
-    border: 1px solid var(--deep-blue);
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
+    border: 1px solid rgba(30, 58, 138, 0.18);
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.22s ease;
+    font-family: inherit;
 }
 
 .quick-reply-btn:hover {
     background: var(--deep-blue);
     color: var(--white);
+    border-color: var(--deep-blue);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 6px 14px rgba(30, 58, 138, 0.28);
 }
 
 .quick-reply-btn:active {
     transform: translateY(0);
+    box-shadow: none;
 }
 
+/* ------------------------------------------------------------------
+   8) AREA INPUT MENGAMBANG
+   ------------------------------------------------------------------ */
 .chat-footer {
-    background: var(--white);
-    padding: 16px 20px;
-    border-top: 1px solid var(--gray-border);
+    padding: 16px 24px 18px;
+    background: rgba(248, 250, 252, 0.55);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(226, 232, 240, 0.7);
 }
 
 .chat-form {
     display: flex;
-    gap: 10px;
     align-items: center;
+    gap: 12px;
 }
 
+/* Input kapsul + glow saat fokus */
 .chat-input {
     flex: 1;
-    padding: 12px 16px;
-    border: 1px solid var(--gray-border);
-    border-radius: 24px;
-    font-size: 13px;
+    padding: 15px 22px;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 999px;
+    font-size: 14px;
     font-family: inherit;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--dark-slate);
     outline: none;
-    transition: all 0.2s;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
 .chat-input:focus {
-    border-color: var(--deep-blue);
-    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    border-color: var(--blue-mid);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(59, 91, 208, 0.14), 0 6px 18px rgba(30, 58, 138, 0.10);
 }
+
+.chat-input::placeholder { color: var(--gray-light); }
 
 .chat-input:disabled {
-    background: var(--off-white);
+    background: var(--gray-soft);
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
+/* Tombol kirim melingkar (pesawat kertas) */
 .send-btn {
-    width: 44px;
-    height: 44px;
-    background: var(--deep-blue);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--deep-blue), var(--blue-mid));
     color: var(--white);
     border: none;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(30, 58, 138, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
+.send-btn svg { width: 20px; height: 20px; }
+
 .send-btn:hover:not(:disabled) {
-    background: #1e40af;
-    transform: scale(1.05);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 24px rgba(30, 58, 138, 0.45);
 }
 
 .send-btn:active:not(:disabled) {
-    transform: scale(0.95);
+    transform: scale(0.94);
 }
 
 .send-btn:disabled {
     background: var(--gray-light);
+    box-shadow: none;
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.55;
 }
 
+/* Counter karakter */
 .char-counter {
-    font-size: 10px;
+    font-size: 10.5px;
     color: var(--gray-light);
     text-align: right;
-    margin-top: 6px;
+    margin: 7px 6px 0 0;
+    letter-spacing: 0.3px;
 }
 
+/* ------------------------------------------------------------------
+   9) TOAST NOTIFICATION
+   ------------------------------------------------------------------ */
 .toast {
     position: fixed;
-    bottom: 30px;
+    bottom: 34px;
     left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--red-alert);
+    transform: translateX(-50%) translateY(120px);
+    background: rgba(220, 38, 38, 0.95);
+    backdrop-filter: blur(6px);
     color: var(--white);
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 13px 24px;
+    border-radius: 999px;
     font-size: 13px;
     font-weight: 500;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 12px 30px rgba(220, 38, 38, 0.4);
     z-index: 1000;
     opacity: 0;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.35s ease-in-out;
+    max-width: calc(100% - 40px);
+    text-align: center;
 }
 
 .toast.show {
@@ -387,39 +569,178 @@ body {
     transform: translateX(-50%) translateY(0);
 }
 
+/* ------------------------------------------------------------------
+   9b) INTERAKSI & AKSESIBILITAS
+   ------------------------------------------------------------------ */
+.send-btn:focus-visible,
+.quick-reply-btn:focus-visible,
+.chat-input:focus-visible,
+.reset-btn:focus-visible,
+.download-btn:focus-visible {
+    outline: 2px solid var(--blue-mid);
+    outline-offset: 2px;
+}
+
+.user-message .message-bubble {
+    animation: bubbleIn 0.25s ease;
+}
+
+@keyframes bubbleIn {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* Perangkat sentuh: matikan efek hover yang menempel */
+@media (hover: none) {
+    .quick-reply-btn:hover {
+        background: rgba(30, 58, 138, 0.06);
+        color: var(--deep-blue);
+        border-color: rgba(30, 58, 138, 0.18);
+        transform: none;
+        box-shadow: none;
+    }
+
+    .quick-reply-btn:active {
+        background: var(--deep-blue);
+        color: var(--white);
+        transform: scale(0.97);
+    }
+
+    .download-btn:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+    }
+
+    .send-btn:hover:not(:disabled) {
+        transform: none;
+        box-shadow: 0 6px 16px rgba(30, 58, 138, 0.35);
+    }
+}
+
+/* ------------------------------------------------------------------
+   10) RESPONSIVE — Mobile First
+   ------------------------------------------------------------------ */
 @media (max-width: 768px) {
     body {
         padding: 0;
+        align-items: stretch;
     }
 
     .chat-container {
         max-width: 100%;
+        height: 100dvh;
         height: 100vh;
-        max-height: 100vh;
         border-radius: 0;
+        border: none;
     }
 
     .chat-header {
-        border-radius: 0;
+        padding: calc(14px + env(safe-area-inset-top)) 18px 14px;
+    }
+
+    .chat-body {
+        padding: 18px 16px;
+    }
+
+    .chat-footer {
+        padding: 12px 16px calc(14px + env(safe-area-inset-bottom));
+    }
+
+    .message-bubble {
+        max-width: 86%;
+    }
+
+    /* Cegah auto-zoom iOS saat fokus input */
+    .chat-input {
+        font-size: 16px;
     }
 }
 
 @media (max-width: 480px) {
-    .header-title {
-        font-size: 15px;
-    }
+    .logo-avatar { width: 40px; height: 40px; }
+    .header-title { font-size: 15px; }
+    .header-subtitle { font-size: 10.5px; }
+    .status-indicator { padding: 5px 10px; font-size: 10px; }
+    .message-bubble { font-size: 13.5px; padding: 12px 16px; }
+    .quick-reply-btn { font-size: 11.5px; padding: 8px 14px; }
+    .chat-input { padding: 14px 18px; font-size: 13.5px; }
+    .send-btn { width: 44px; height: 44px; }
+}
 
-    .header-subtitle {
-        font-size: 10px;
-    }
+/* Mengurangi gerak bagi pengguna yang sensitif */
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
 
-    .message-bubble {
-        max-width: 90%;
-        font-size: 13px;
-    }
+/* ==================================================================
+   V3 — Quick Reply swipeable, counter error, retry button
+   ================================================================== */
+.quick-replies {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+}
 
-    .quick-reply-btn {
-        font-size: 11px;
-        padding: 7px 12px;
-    }
+.quick-replies::-webkit-scrollbar {
+    height: 5px;
+}
+
+.quick-replies::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.5);
+    border-radius: 10px;
+}
+
+.quick-reply-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+}
+
+/* Counter karakter: merah saat mendekati batas */
+.char-counter.error {
+    color: var(--red-alert);
+    font-weight: 700;
+}
+
+.char-counter.warn {
+    color: var(--gold-accent);
+    font-weight: 600;
+}
+
+/* Tombol coba lagi (retry) di dalam bubble error */
+.retry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    border: 1px solid var(--blue-mid);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--blue-mid);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.retry-btn:hover {
+    background: var(--blue-mid);
+    color: var(--white);
+}
+
+.retry-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.bubble-error .message-bubble {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: var(--red-deep, #b91c1c);
 }

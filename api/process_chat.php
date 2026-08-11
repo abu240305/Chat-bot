@@ -5,25 +5,25 @@ session_start();
 $rateLimitMax = 5;
 $rateLimitWindow = 10;
 
-$now = time();
-
-if (!isset($_SESSION['rate_requests']) || !is_array($_SESSION['rate_requests'])) {
-    $_SESSION['rate_requests'] = [];
+if (!isset($_SESSION['last_chat_time']) || !is_numeric($_SESSION['last_chat_time'])) {
+    $_SESSION['last_chat_time'] = 0;
+    $_SESSION['chat_count'] = 0;
 }
 
-$_SESSION['rate_requests'] = array_filter($_SESSION['rate_requests'], function ($timestamp) use ($now, $rateLimitWindow) {
-    return $timestamp > ($now - $rateLimitWindow);
-});
+if ((time() - $_SESSION['last_chat_time']) >= $rateLimitWindow) {
+    $_SESSION['last_chat_time'] = time();
+    $_SESSION['chat_count'] = 1;
+} else {
+    $_SESSION['chat_count']++;
+}
 
-if (count($_SESSION['rate_requests']) >= $rateLimitMax) {
+if ($_SESSION['chat_count'] > $rateLimitMax) {
     echo json_encode([
         'success' => false,
         'message' => 'Terlalu banyak permintaan, tunggu beberapa saat.'
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
-
-$_SESSION['rate_requests'][] = $now;
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/validator.php';
 require_once __DIR__ . '/../core/Preprocessing.php';
 require_once __DIR__ . '/../core/CosineSimilarity.php';
 
@@ -58,37 +59,44 @@ try {
         throw new Exception('Format JSON tidak valid');
     }
 
-    if (!isset($data['message']) || empty(trim($data['message']))) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Pesan tidak boleh kosong'
-        ]);
-        exit;
+if (!isset($data['message']) || empty(trim($data['message']))) {
+        if (!isset($data['pertanyaan']) || empty(trim($data['pertanyaan']))) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Pesan tidak boleh kosong'
+            ]);
+            exit;
+        }
+        $userMessage = trim($data['pertanyaan']);
+    } else {
+        $userMessage = trim($data['message']);
     }
-
-    $userMessage = trim($data['message']);
 
     $userMessage = strip_tags($userMessage);
     $userMessage = htmlspecialchars($userMessage, ENT_QUOTES, 'UTF-8');
 
-    if (strlen($userMessage) < 1) {
+    $valErr = valChatMessage($userMessage);
+    if ($valErr !== '') {
         echo json_encode([
             'success' => false,
-            'message' => 'Pesan terlalu pendek. Minimal 1 karakter.'
-        ]);
+            'message' => $valErr
+        ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    if (strlen($userMessage) > 250) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Pesan terlalu panjang. Maksimal 250 karakter.'
-        ]);
-        exit;
-    }
+$threshold = 0.25;
+$fallbackMessage = "Maaf, DIPA-Bot belum memahami pertanyaan tersebut. Silakan tanyakan seputar KRS, Jadwal Kuliah, UAS, Skripsi, atau topik akademik lainnya.";
 
-    $threshold = 0.25;
-    $fallbackMessage = "Maaf, DIPA-Bot belum memahami pertanyaan tersebut. Silakan tanyakan seputar KRS, Jadwal Kuliah, UAS, Skripsi, atau topik akademik lainnya.";
+try {
+    $stmt = $db->prepare("SELECT nilai FROM tb_pengaturan WHERE nama = 'fallback' LIMIT 1");
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row && trim($row['nilai']) !== '') {
+        $fallbackMessage = $row['nilai'];
+    }
+} catch (Exception $e) {
+    error_log("Fallback Setting Error: " . $e->getMessage());
+}
 
     $logChat = function ($question, $answer, $score, $matchedId) use ($db) {
         try {
@@ -124,15 +132,29 @@ try {
 
     $tfCounts = array_count_values($tokens);
     $totalTerms = count($tokens);
-    $queryVector = [];
-    foreach ($tfCounts as $term => $count) {
-        $queryVector[$term] = $totalTerms > 0 ? $count / $totalTerms : 0;
-    }
 
     $docVectors = [];
+    $df = [];
     $stmt = $db->query("SELECT id_pengetahuan, term, bobot_tfidf FROM tb_vektor_tfidf");
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $docVectors[(int)$row['id_pengetahuan']][$row['term']] = (float)$row['bobot_tfidf'];
+        $did = (int)$row['id_pengetahuan'];
+        $term = $row['term'];
+        $docVectors[$did][$term] = (float)$row['bobot_tfidf'];
+        $df[$term] = isset($df[$term]) ? $df[$term] + 1 : 1;
+    }
+
+    $N = count($docVectors);
+
+    $queryVector = [];
+    if ($N > 0) {
+        foreach ($tfCounts as $term => $count) {
+            if (!isset($df[$term]) || $df[$term] <= 0) {
+                continue;
+            }
+            $tf = $totalTerms > 0 ? $count / $totalTerms : 0;
+            $idf = log($N / $df[$term]);
+            $queryVector[$term] = $tf * $idf;
+        }
     }
 
     $bestScore = 0.0;

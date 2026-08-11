@@ -31,3 +31,7 @@ docker-compose.*.yaml
 init-perms.sh
 000-default.conf
 .dockerignore
+
+# Dokumen spesifikasi (.md) — hanya README.md yang boleh masuk repo
+*.md
+!README.md

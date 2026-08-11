@@ -3,9 +3,10 @@
 // ====================================================================
 // KONFIGURASI DATABASE — PDO Prepared Statements
 // ====================================================================
-// Nilai database dibaca dari file ".env" (di root proyek) bila ada.
-// Contoh lengkap lihat ".env.example". Nilai environment variable
-// (mis. dari docker-compose) tetap lebih diutamakan.
+// Kredensial dibaca dari file ".env" di root proyek bila ada (contoh
+// template: .env.example). Jika tidak ada, dipakai nilai default statis
+// di bawah (default XAMPP: localhost / root / password kosong).
+// Environment variable (mis. dari docker-compose) lebih diutamakan.
 // ====================================================================
 
 function loadEnvFile($path) {

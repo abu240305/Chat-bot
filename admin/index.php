@@ -7,6 +7,7 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/validator.php';
 
 $error = '';
 
@@ -21,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!isset($_POST['csrf_token']) || !hash_equals($csrfToken, $_POST['csrf_token'])) {
         $error = 'Token keamanan tidak valid. Silakan muat ulang halaman.';
-    } elseif (empty($username) || empty($password)) {
-        $error = 'Username dan password harus diisi.';
+    } elseif (($valErr = valLogin($username, $password)) !== '') {
+        $error = $valErr;
     } else {
         try {
             $db = Database::getInstance()->getConnection();
@@ -66,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin - DIPA-Bot</title>
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=5">
 </head>
 <body>
     <div class="login-container">
