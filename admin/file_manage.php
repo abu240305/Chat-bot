@@ -113,7 +113,7 @@ function tapisFile($filePath) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola File - DIPA-Bot Admin</title>
-    <link rel="stylesheet" href="../assets/css/admin.css?v=5">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=9">
 </head>
 <body>
 <div class="admin-container">
@@ -191,7 +191,7 @@ function tapisFile($filePath) {
                         <tr>
                             <th>Nama File</th>
                             <th>Ukuran</th>
-                            <th>Aksi</th>
+                            <th class="sticky-col">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -210,13 +210,13 @@ function tapisFile($filePath) {
                             <tr>
                                 <td><?php echo htmlspecialchars($fileName, ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td class="file-size"><?php echo htmlspecialchars($sizeLabel, ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td>
-                                    <a href="../assets/downloads/<?php echo htmlspecialchars(rawurlencode($fileName), ENT_QUOTES, 'UTF-8'); ?>" target="_blank" class="btn btn-sm btn-blue">Lihat</a>
+                                <td class="cell-actions sticky-col">
+                                    <a href="../assets/downloads/<?php echo htmlspecialchars(rawurlencode($fileName), ENT_QUOTES, 'UTF-8'); ?>" target="_blank" class="btn btn-sm btn-blue" title="Lihat"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a>
                                     <form method="POST" action="file_manage.php" class="inline-form" onsubmit="return confirm('Yakin ingin menghapus file ini?');">
                                         <?php echo csrfField(); ?>
                                         <input type="hidden" name="aksi" value="hapus">
                                         <input type="hidden" name="nama_file" value="<?php echo htmlspecialchars($fileName, ENT_QUOTES, 'UTF-8'); ?>">
-                                        <button type="submit" class="btn btn-sm btn-red">Hapus</button>
+                                        <button type="submit" class="btn btn-sm btn-red" title="Hapus"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
                                     </form>
                                 </td>
                             </tr>
@@ -259,7 +259,7 @@ function tapisFile($filePath) {
             </div>
 
             <div style="display: flex; gap: 12px; margin-top: 16px;">
-                <button type="submit" class="btn btn-gold btn-inline">Upload Sekarang</button>
+                <button type="submit" class="btn btn-primary btn-inline">Upload Sekarang</button>
                 <button type="button" class="btn btn-sm btn-red" onclick="closeModal('uploadModal')">Batal</button>
             </div>
         </form>

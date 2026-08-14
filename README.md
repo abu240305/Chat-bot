@@ -126,6 +126,7 @@ chatbot/
 │
 ├── index.php                    # Halaman utama chat mahasiswa (UI)
 ├── database.sql                 # Skema database + data dummy (6 tabel)
+├── docker-compose.yml           # Konfigurasi container untuk Docker
 ├── .env.example                 # Template konfigurasi database
 ├── .gitignore                   # Daftar file yang dibatasi untuk repo
 │
@@ -238,10 +239,13 @@ Skrip akan membuat database `chatbot_undipa` beserta 6 tabel dan data dummy akad
 2. Pastikan Apache + MySQL aktif di XAMPP Control Panel.
 3. Buka `http://localhost/<nama-folder>/`.
 
-**Opsi 2 — Docker:**
-1. Siapkan container database (misal `mariadb-pusat`) dan container web `php:8.2-apache` dengan ekstensi `pdo_mysql`.
-2. Letakkan kedua container pada network Docker yang sama, arahkan kredensial di `config/database.php` ke hostname database (misal `mariadb-pusat`).
-3. Mount folder proyek ke `/var/www/html` dan akses port yang dipublikasikan (misal `http://localhost:8081/`).
+**Opsi 2 — Docker (Rekomendasi):**
+1. Pastikan Docker Desktop / Engine sudah terpasang.
+2. Cukup jalankan perintah berikut di dalam folder proyek:
+   ```bash
+   docker-compose up -d
+   ```
+3. Akses aplikasi melalui `http://localhost:8080/`. Database otomatis berjalan di latar belakang (mariadb-pusat).
 
 **Akses Halaman:**
 - Chat mahasiswa: `http://localhost/<folder>/`

@@ -41,45 +41,45 @@ CREATE TABLE tb_pengetahuan (
 INSERT INTO tb_pengetahuan (pertanyaan, jawaban, file_lampiran, kategori) VALUES
 
 -- 1. PROSEDUR KRS
-('Bagaimana cara mengisi KRS online?', 'Untuk mengisi KRS online, mahasiswa harus login ke portal akademik menggunakan NIM dan password, kemudian pilih menu KRS, pilih mata kuliah yang tersedia sesuai jadwal, lalu klik Simpan. Pastikan KRS diisi sebelum batas waktu yang ditentukan.', NULL, 'KRS'),
+('Bagaimana cara mengisi KRS online?', 'Mahasiswa dapat mengunduh file KRS sesuai program studi melalui SISKA. File tersebut berisi daftar kode mata kuliah untuk semester ganjil dan genap pada program studi SI, TI, BD, RPL, MI, dan KWU. Setelah mendapatkan kode mata kuliah, mahasiswa dapat menginput kode tersebut pada halaman KRS Reguler di SIAKA sesuai mata kuliah yang akan diprogramkan. Berikut file KRS (Si, Ti, BD, RPL, MI, KWU).', NULL, 'KRS'),
 
 ('Apa syarat mengisi KRS?', 'Syarat mengisi KRS adalah mahasiswa harus aktif (sudah melakukan registrasi pembayaran semester berjalan), tidak memiliki tunggakan administrasi, dan memiliki Kartu Rencana Studi yang telah disetujui Dosen Pembimbing Akademik (PA).', 'panduan-krs_2b49c.pdf', 'KRS'),
 
 ('Kapan batas waktu pengisian KRS?', 'Batas waktu pengisian KRS adalah 2 minggu setelah perkuliahan semester baru dimulai. Untuk semester genap biasanya di akhir Februari, sedangkan semester ganjil di akhir Agustus. Cek kalender akademik untuk tanggal pasti.', NULL, 'KRS'),
 
 -- 2. JADWAL KULIAH
-('Bagaimana cara melihat jadwal kuliah?', 'Jadwal kuliah dapat dilihat melalui portal akademik di menu Jadwal Perkuliahan atau melalui papan pengumuman di gedung fakultas. Jadwal mencakup hari, jam, ruangan, dan nama dosen pengampu.', NULL, 'Jadwal'),
+('Bagaimana cara melihat jadwal kuliah?', 'Jadwal kuliah dapat dilihat melalui portal akademik SISKA di website https://siska.undipa.ac.id/ pada menu Jadwal Perkuliahan atau melalui papan pengumuman di gedung fakultas. Jadwal mencakup hari, jam, ruangan, dan nama dosen pengampu.', NULL, 'Jadwal'),
 
 ('Apakah jadwal kuliah bisa berubah?', 'Ya, jadwal kuliah dapat berubah sewaktu-waktu karena keperluan dosen atau perubahan ruangan. Mahasiswa diharapkan selalu mengecek portal akademik dan grup kelas untuk informasi terbaru.', NULL, 'Jadwal'),
 
 -- 3. UJIAN AKHIR SEMESTER (UAS)
 ('Kapan jadwal UAS semester ini?', 'Jadwal UAS akan diumumkan melalui portal akademik dan papan pengumuman 2 minggu sebelum pelaksanaan. Biasanya UAS dilaksanakan pada minggu ke-16 hingga ke-18 setiap semester. Pastikan memeriksa jadwal secara berkala.', NULL, 'UAS'),
 
-('Apa syarat mengikuti UAS?', 'Syarat mengikuti UAS adalah kehadiran minimal 75% dari total pertemuan, tidak memiliki tunggakan pembayaran, dan telah mengisi KRS dengan benar. Mahasiswa yang tidak memenuhi syarat tidak diperkenankan mengikuti ujian.', NULL, 'UAS'),
+('Apa syarat mengikuti UAS?', 'Untuk mengikuti UAS, mahasiswa wajib membawa Kartu Ujian yang dapat diunduh atau diperoleh melalui SISKA. Kartu Ujian memuat foto mahasiswa serta kode atau mata kuliah yang akan diikuti. Mahasiswa juga wajib membawa KTM, KTP, atau SIM, datang paling lambat 15 menit sebelum ujian, serta berpakaian sopan dan rapi.', NULL, 'UAS'),
 
 ('Bagaimana jika tidak bisa hadir saat UAS?', 'Jika berhalangan hadir saat UAS karena sakit atau keperluan mendesak, mahasiswa harus mengajukan surat keterangan resmi (seperti surat dokter) ke bagian akademik maksimal 3 hari setelah jadwal UAS. Ujian susulan akan dijadwalkan kemudian.', NULL, 'UAS'),
 
 -- 4. KALENDER AKADEMIK
-('Bagaimana cara melihat kalender akademik?', 'Kalender akademik dapat diunduh di website resmi Universitas Dipa Makassar atau dilihat di portal mahasiswa. Kalender ini memuat jadwal penting seperti awal semester, registrasi, KRS, UTS, UAS, dan libur akademik.', 'kalender-akademik-2024.pdf', 'Kalender'),
+('Bagaimana cara melihat kalender akademik?', 'Kalender akademik dapat diunduh di website resmi Universitas Dipa Makassar atau dilihat di portal mahasiswa. Kalender ini memuat jadwal penting seperti awal semester, registrasi, KRS, UTS, UAS, dan libur akademik.', 'Kalender Akademik 2026_2027 Universitas Dipa Makassar.pdf', 'Kalender'),
 
 ('Kapan libur semester?', 'Libur semester biasanya berlangsung 2-3 minggu setelah pelaksanaan UAS dan sebelum semester baru dimulai. Untuk informasi detail silakan cek kalender akademik tahun berjalan.', NULL, 'Kalender'),
 
 -- 5. PANDUAN SKRIPSI
-('Apa syarat mengambil skripsi?', 'Syarat mengambil skripsi adalah telah menempuh minimal 120 SKS dengan IPK minimal 2.00, telah lulus mata kuliah prasyarat (Metodologi Penelitian), tidak memiliki tunggakan administrasi, dan mendapat persetujuan dari Ketua Program Studi.', 'panduan-skripsi_8a23d.pdf', 'Skripsi'),
+('Apa syarat mengambil skripsi?', 'Mahasiswa dapat memprogramkan Seminar Proposal dan Skripsi pada semester ganjil maupun genap dengan ketentuan telah melulusi minimal 126 SKS untuk semester ganjil atau 116 SKS untuk semester genap, serta memiliki IPK minimal 2,0. Mahasiswa juga harus memenuhi prasyarat mata kuliah yang ditentukan, termasuk telah melulusi Program Pembuatan Aplikasi Konsentrasi atau Start-Up I sesuai program studi. Untuk mahasiswa angkatan 2026, terdapat ketentuan tambahan terkait MKWK dengan nilai minimal B dan jumlah nilai D tidak lebih dari 10%.', 'panduan-skripsi_8a23d.pdf', 'Skripsi'),
 
-('Bagaimana prosedur pengajuan judul skripsi?', 'Mahasiswa mengajukan 3 judul skripsi melalui form pengajuan judul, kemudian form diserahkan ke Ketua Prodi untuk review. Setelah disetujui, mahasiswa akan mendapat surat penunjukan pembimbing skripsi.', NULL, 'Skripsi'),
+('Bagaimana prosedur pengajuan judul skripsi?', 'Prosedur pengajuan judul skripsi dimulai dengan menentukan topik dan judul sesuai ranah penelitian program studi, kemudian mengajukan judul kepada Ketua Program Studi untuk diverifikasi. Setelah judul disetujui, mahasiswa mendapatkan dosen pembimbing dan dapat memulai proses bimbingan hingga skripsi selesai. Setelah memenuhi persyaratan dan mendapatkan persetujuan pembimbing, mahasiswa dapat mengajukan diri untuk mengikuti sidang skripsi sesuai jadwal dan ketentuan yang berlaku.', NULL, 'Skripsi'),
 
 ('Berapa lama waktu pengerjaan skripsi?', 'Waktu standar pengerjaan skripsi adalah 6 bulan (1 semester). Mahasiswa dapat mengajukan perpanjangan maksimal 2 semester dengan persetujuan dosen pembimbing dan Ketua Prodi.', NULL, 'Skripsi'),
 
 -- 6. TEMPLATE SKRIPSI
-('Dimana saya bisa download template skripsi?', 'Template skripsi resmi Universitas Dipa Makassar dapat diunduh melalui link berikut. Template ini mencakup format cover, abstrak, BAB I-V, dan daftar pustaka sesuai pedoman penulisan ilmiah.', 'template-skripsi_8f91a.docx', 'Skripsi'),
+('Dimana saya bisa download template skripsi?', 'Template skripsi resmi Universitas Dipa Makassar dapat diunduh melalui link berikut. Template ini mencakup format cover, abstrak, BAB I-V, dan daftar pustaka sesuai pedoman penulisan ilmiah.', 'Template SKRIPSI_Infokom_Undipa_2025 (3).docx', 'Skripsi'),
 
-('Apakah ada template proposal skripsi?', 'Ya, template proposal skripsi tersedia dalam satu paket dengan template skripsi lengkap. Anda dapat mengunduhnya melalui portal atau bertanya ke bagian akademik.', 'template-skripsi_8f91a.docx', 'Skripsi'),
+('Apakah ada template proposal skripsi?', 'Ya, template proposal skripsi juga sudah tersedia dan terpisah dari template skripsi. Anda dapat mengunduhnya secara langsung melalui link dokumen berikut.', 'Template PROPOSAL_Infokom_Undipa_2025 (1).docx', 'Skripsi'),
 
 -- 7. KARTU KONTROL BIMBINGAN
-('Apa itu kartu kontrol bimbingan?', 'Kartu kontrol bimbingan adalah dokumen wajib yang digunakan mahasiswa untuk mencatat setiap pertemuan bimbingan skripsi dengan dosen pembimbing. Kartu ini harus ditandatangani dosen setiap kali bimbingan dan diserahkan saat pendaftaran sidang.', 'kartu-kontrol-bimbingan_4c72e.pdf', 'Skripsi'),
+('Apa itu kartu kontrol bimbingan?', 'Kartu kontrol bimbingan adalah dokumen wajib yang digunakan mahasiswa untuk mencatat setiap pertemuan bimbingan skripsi dengan dosen pembimbing. Kartu ini harus ditandatangani dosen setiap kali bimbingan dan diserahkan saat pendaftaran sidang.', 'FR-DP-04-22 Lembar konsultasi pembimbing KKLP Skripsi.pdf', 'Skripsi'),
 
-('Berapa kali minimal bimbingan skripsi?', 'Minimal bimbingan skripsi adalah 8 kali pertemuan dengan setiap pembimbing (Pembimbing I dan Pembimbing II). Total minimal 16 kali bimbingan yang tercatat di kartu kontrol.', NULL, 'Skripsi'),
+('Berapa kali minimal bimbingan skripsi?', 'Mahasiswa wajib melakukan bimbingan dengan dua dosen pembimbing, yaitu Pembimbing I dan Pembimbing II. Bimbingan dilakukan minimal 3 kali dengan masing-masing pembimbing untuk Proposal dan 3 kali untuk Skripsi. Setiap hasil konsultasi dan koreksi dari dosen pembimbing harus dicatat pada kartu atau lembar kontrol/konsultasi bimbingan sebagai bukti pelaksanaan bimbingan.', NULL, 'Skripsi'),
 
 -- 8. FORM EKSTRAKURIKULER
 ('Bagaimana cara mendaftar kegiatan ekstrakurikuler?', 'Mahasiswa dapat mendaftar kegiatan ekstrakurikuler dengan mengisi form pendaftaran yang tersedia di bagian kemahasiswaan atau mengunduh form berikut, kemudian diserahkan ke koordinator UKM yang dituju.', 'form-ekstrakurikuler_9d14b.pdf', 'Kemahasiswaan'),

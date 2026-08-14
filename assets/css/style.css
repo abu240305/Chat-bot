@@ -422,12 +422,37 @@ body::after {
    ------------------------------------------------------------------ */
 .quick-replies {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: nowrap;
+    gap: 8px;
     margin-top: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+}
+
+.quick-replies::-webkit-scrollbar {
+    height: 5px;
+}
+
+.quick-replies::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.5);
+    border-radius: 10px;
+}
+
+/* Desktop: biarkan chips membungkus agar rapi */
+@media (min-width: 769px) {
+    .quick-replies {
+        flex-wrap: wrap;
+        overflow-x: visible;
+        padding-bottom: 0;
+    }
 }
 
 .quick-reply-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
     background: rgba(30, 58, 138, 0.06);
     color: var(--deep-blue);
     border: 1px solid rgba(30, 58, 138, 0.18);
@@ -673,33 +698,8 @@ body::after {
 }
 
 /* ==================================================================
-   V3 — Quick Reply swipeable, counter error, retry button
+   V3 — Counter error & retry button (quick replies merge di atas)
    ================================================================== */
-.quick-replies {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-    padding-bottom: 6px;
-    scrollbar-width: thin;
-}
-
-.quick-replies::-webkit-scrollbar {
-    height: 5px;
-}
-
-.quick-replies::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.5);
-    border-radius: 10px;
-}
-
-.quick-reply-btn {
-    flex-shrink: 0;
-    scroll-snap-align: start;
-}
-
 /* Counter karakter: merah saat mendekati batas */
 .char-counter.error {
     color: var(--red-alert);

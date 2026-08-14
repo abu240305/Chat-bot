@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aksi']) && $_POST['ak
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rebuild Vektor - DIPA-Bot Admin</title>
-    <link rel="stylesheet" href="../assets/css/admin.css?v=5">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=9">
 </head>
 <body>
 <div class="rebuild-wrap">
