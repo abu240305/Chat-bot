@@ -145,6 +145,7 @@ try {
 
     $N = count($docVectors);
 
+    // === VEKTORISASI ===
     $queryVector = [];
     if ($N > 0) {
         foreach ($tfCounts as $term => $count) {
@@ -157,6 +158,7 @@ try {
         }
     }
 
+    // === PEMILIHAN NILAI TERTINGGI ===
     $bestScore = 0.0;
     $bestDocId = null;
     foreach ($docVectors as $docId => $docVector) {
@@ -167,6 +169,7 @@ try {
         }
     }
 
+    // === THRESHOLD (Ambang Batas >= 0.25) ===
     if ($bestDocId !== null && $bestScore >= $threshold) {
         $stmt = $db->prepare("SELECT id_pengetahuan, jawaban, file_lampiran FROM tb_pengetahuan WHERE id_pengetahuan = ? LIMIT 1");
         $stmt->execute([$bestDocId]);
@@ -196,6 +199,7 @@ try {
 
     $logChat($userMessage, $fallbackMessage, $bestScore, null);
 
+    // === FALLBACK (Ketika nilai similarity < 0.25) ===
     echo json_encode([
         'success' => true,
         'jawaban' => $fallbackMessage,

@@ -2,6 +2,7 @@
 
 class CosineSimilarity {
     
+    // === COSINE SIMILARITY ===
     public function calculate($vectorA, $vectorB) {
         $dotProduct = $this->dotProduct($vectorA, $vectorB);
         

@@ -37,6 +37,7 @@ class Tfidf {
         $this->calculateIDF();
     }
 
+    // TF-IDF (Perhitungan IDF) ===
     private function calculateIDF() {
         $N = count($this->documents);
         
@@ -45,6 +46,7 @@ class Tfidf {
         }
         
         foreach ($this->vocabulary as $term) {
+            // Perhitungan DF (Document Frequency) ===
             $df = 0;
             
             foreach ($this->documents as $doc) {
@@ -61,6 +63,7 @@ class Tfidf {
         }
     }
 
+    // TF-IDF (Perhitungan TF) ===
     public function calculateTF($tokens) {
         $tf = [];
         $totalTerms = count($tokens);
@@ -78,6 +81,7 @@ class Tfidf {
         return $tf;
     }
 
+    // TF-IDF (Perhitungan TF-IDF) ===
     public function calculateTFIDF($tokens) {
         $tf = $this->calculateTF($tokens);
         $tfidf = [];

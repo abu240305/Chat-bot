@@ -60,16 +60,19 @@ class Preprocessing {
         }
     }
 
+    // PREPROCESSING (Case Folding) ===
     public function caseFolding($text) {
         return strtolower($text);
     }
 
+    // PREPROCESSING (Filtering) ===
     public function filtering($text) {
         $text = preg_replace('/[^a-z0-9\s]/i', ' ', $text);
         $text = preg_replace('/\s+/', ' ', $text);
         return trim($text);
     }
 
+    // NORMALISASI ===
     public function normalization($text) {
         $words = explode(' ', $text);
         $normalized = [];
@@ -91,6 +94,7 @@ class Preprocessing {
         return implode(' ', $normalized);
     }
 
+    // PREPROCESSING (Tokenizing) ===
     public function tokenizing($text) {
         $text = preg_replace('/\s+/', ' ', $text);
         $tokens = explode(' ', trim($text));
@@ -99,12 +103,14 @@ class Preprocessing {
         });
     }
 
+    // PREPROCESSING (Stopword Removal) ===
     public function stopwordRemoval($tokens) {
         return array_values(array_filter($tokens, function($token) {
             return !in_array(strtolower($token), $this->stopwords);
         }));
     }
 
+    // PREPROCESSING (Stemming) ===
     public function stemming($tokens) {
         $stemmed = [];
         foreach ($tokens as $token) {
