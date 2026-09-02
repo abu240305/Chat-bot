@@ -89,12 +89,19 @@ if (isset($_GET['edit'])) {
     }
 }
 
+$uploadDir = __DIR__ . '/../assets/downloads/';
+$allowedExt = ['pdf', 'docx'];
 $listFiles = [];
-try {
-    $stmt = $db->query("SELECT file_lampiran FROM tb_pengetahuan WHERE file_lampiran IS NOT NULL AND file_lampiran != '' GROUP BY file_lampiran");
-    $listFiles = $stmt->fetchAll(PDO::FETCH_COLUMN);
-} catch (PDOException $e) {
-    error_log('QA list files error: ' . $e->getMessage());
+
+if (is_dir($uploadDir)) {
+    $listFiles = array_filter(scandir($uploadDir), function ($item) use ($allowedExt) {
+        if ($item === '.' || $item === '..' || $item === '.htaccess') {
+            return false;
+        }
+        $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
+        return in_array($ext, $allowedExt);
+    });
+    natcasesort($listFiles);
 }
 
 $perPage = isset($_GET['per']) ? (int)$_GET['per'] : 10;
