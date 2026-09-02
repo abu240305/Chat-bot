@@ -43,8 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $originalName = basename($file['name']);
             $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+            $baseName = pathinfo($originalName, PATHINFO_FILENAME);
+            $cleanName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $baseName);
 
-            $newName = md5(uniqid(rand(), true)) . '_' . time() . '.' . $ext;
+            $newName = $cleanName . '_' . time() . '.' . $ext;
             $targetPath = $uploadDir . $newName;
 
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -247,7 +249,7 @@ function tapisFile($filePath) {
                 <p class="upload-note">
                     Format yang diizinkan: <strong>.pdf, .docx</strong><br>
                     Ukuran maksimal: <strong>10 MB</strong><br>
-                    File akan di-rename otomatis dengan nama acak (hash) demi keamanan.
+                    Nama file akan disesuaikan (dibersihkan dari spasi/karakter khusus) dan ditambahkan waktu upload agar tidak tertimpa.
                 </p>
             </div>
 
