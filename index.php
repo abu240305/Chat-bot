@@ -13,7 +13,7 @@ try {
                 GROUP BY kategori
             ) x ON p.id_pengetahuan = x.id_pertama
             ORDER BY p.id_pengetahuan ASC
-            LIMIT 5";
+            LIMIT 12";
 
     $quickReplies = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
@@ -23,11 +23,16 @@ try {
 
 if (empty($quickReplies)) {
     $quickReplies = [
-        ['kategori' => 'KRS',        'pertanyaan' => 'Bagaimana cara mengisi KRS?'],
-        ['kategori' => 'Jadwal',     'pertanyaan' => 'Bagaimana cara melihat jadwal kuliah?'],
-        ['kategori' => 'Skripsi',    'pertanyaan' => 'Apa syarat mengambil skripsi?'],
-        ['kategori' => 'Template',   'pertanyaan' => 'Dimana saya bisa download template skripsi?'],
-        ['kategori' => 'UAS',        'pertanyaan' => 'Kapan jadwal UAS semester ini?']
+        ['kategori' => 'KRS',            'pertanyaan' => 'Bagaimana alur dan prosedur pengisian KRS online?'],
+        ['kategori' => 'Jadwal',         'pertanyaan' => 'Bagaimana cara melihat jadwal kuliah?'],
+        ['kategori' => 'Skripsi',        'pertanyaan' => 'Apa saja syarat berkas pendaftaran ujian sidang skripsi?'],
+        ['kategori' => 'MBKM',           'pertanyaan' => 'Apa syarat dan ketentuan untuk mengikuti program MBKM di UNDIPA?'],
+        ['kategori' => 'Cuti',           'pertanyaan' => 'Bagaimana prosedur dan alur mengajukan cuti akademik?'],
+        ['kategori' => 'Wisuda',         'pertanyaan' => 'Apa saja syarat dan ketentuan pendaftaran wisuda sarjana di UNDIPA?'],
+        ['kategori' => 'SKL',            'pertanyaan' => 'Bagaimana prosedur mengurus Surat Keterangan Lulus (SKL)?'],
+        ['kategori' => 'Publikasi',      'pertanyaan' => 'Apakah skripsi dapat digantikan dengan publikasi artikel ilmiah atau jurnal?'],
+        ['kategori' => 'Ekstrakurikuler','pertanyaan' => 'Apa saja daftar UKM dan kegiatan ekstrakurikuler yang aktif di UNDIPA?'],
+        ['kategori' => 'Alumni',         'pertanyaan' => 'Apa syarat pengumpulan pas foto dan data diri untuk Buku Alumni?']
     ];
 }
 
@@ -44,7 +49,7 @@ try {
 }
 
 if ($greeting === '') {
-    $greeting = "Halo! Saya DIPA-Bot, asisten virtual layanan akademik Universitas Dipa Makassar.\nAda yang bisa saya bantu? Silakan tanyakan seputar KRS, Jadwal Kuliah, UAS, Skripsi, atau topik akademik lainnya.";
+    $greeting = "Halo! Saya DIPA-Bot, asisten virtual layanan akademik Universitas Dipa Makassar.\nAda yang bisa saya bantu? Silakan tanyakan seputar KRS, Jadwal Kuliah, MBKM, Skripsi, Cuti, Wisuda, SKL, atau topik akademik lainnya.";
 }
 ?>
 <!DOCTYPE html>

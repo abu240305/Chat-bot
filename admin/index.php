@@ -1,8 +1,13 @@
 <?php
 session_start();
 
+$adminBase = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+if ($adminBase === '' || $adminBase === '.') {
+    $adminBase = '/admin';
+}
+
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: dashboard.php');
+    header('Location: ' . $adminBase . '/dashboard.php');
     exit;
 }
 
@@ -47,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['admin_email'] = $admin['email'];
                 $_SESSION['login_time'] = time();
                 
-                header('Location: dashboard.php');
+                header('Location: ' . $adminBase . '/dashboard.php');
                 exit;
             } else {
                 $error = 'Username atau password salah.';

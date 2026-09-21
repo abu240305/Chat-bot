@@ -35,3 +35,4 @@ init-perms.sh
 # Dokumen spesifikasi (.md) — hanya README.md yang boleh masuk repo
 *.md
 !README.md
+!DOKUMENTASI_UML_SKRIPSI.md

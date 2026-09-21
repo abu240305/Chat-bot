@@ -85,7 +85,7 @@ if (!isset($data['message']) || empty(trim($data['message']))) {
     }
 
 $threshold = 0.25;
-$fallbackMessage = "Maaf, DIPA-Bot belum memahami pertanyaan tersebut. Silakan tanyakan seputar KRS, Jadwal Kuliah, UAS, Skripsi, atau topik akademik lainnya.";
+$fallbackMessage = "Maaf, DIPA-Bot belum memahami pertanyaan tersebut. Silakan tanyakan seputar KRS, Jadwal Kuliah, MBKM, Skripsi, Cuti, Wisuda, atau topik akademik lainnya.";
 
 try {
     $stmt = $db->prepare("SELECT nilai FROM tb_pengaturan WHERE nama = 'fallback' LIMIT 1");
