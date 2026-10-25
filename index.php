@@ -60,7 +60,7 @@ if ($greeting === '') {
     <meta name="description" content="DIPA-Bot - Chatbot Cerdas Layanan Akademik Universitas Dipa Makassar">
     <meta name="author" content="Mohammad Ali Riedza">
     <title>DIPA-Bot - Layanan Akademik UNDIPA</title>
-    <link rel="stylesheet" href="assets/css/style.css?v=5">
+    <link rel="stylesheet" href="assets/css/style.css?v=6">
 </head>
 <body>
     
@@ -96,7 +96,9 @@ if ($greeting === '') {
             
             <div class="message-wrapper bot-message" id="greetingMsg">
                 <div class="message-bubble">
-                    <p><?php echo nl2br(htmlspecialchars($greeting, ENT_QUOTES, 'UTF-8')); ?></p>
+                    <div class="bot-response-content">
+                        <p><?php echo nl2br(htmlspecialchars($greeting, ENT_QUOTES, 'UTF-8')); ?></p>
+                    </div>
                 </div>
                 <span class="message-time">Sekarang</span>
             </div>
@@ -138,6 +140,6 @@ if ($greeting === '') {
         <span id="toastMessage"></span>
     </div>
 
-    <script src="assets/js/chat.js"></script>
+    <script src="assets/js/chat.js?v=2"></script>
 </body>
 </html>

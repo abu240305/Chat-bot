@@ -350,6 +350,114 @@ body::after {
 
 .message-bubble strong { font-weight: 700; }
 
+/* ------------------------------------------------------------------
+   Struktur Pesan Bot Rapi & Interaktif
+   ------------------------------------------------------------------ */
+.bot-response-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+.chat-intro-text {
+    font-weight: 600;
+    color: var(--dark-slate);
+    line-height: 1.5;
+}
+
+.chat-steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 0;
+}
+
+.chat-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(203, 213, 225, 0.7);
+    border-radius: 10px;
+    padding: 9px 13px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.chat-step-badge {
+    background: linear-gradient(135deg, var(--deep-blue), var(--blue-mid));
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.chat-step-content {
+    flex: 1;
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 13px;
+}
+
+.chat-step-content strong {
+    color: var(--deep-blue);
+}
+
+.chat-link-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(30, 58, 138, 0.08);
+    color: var(--deep-blue);
+    text-decoration: none;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    border: 1px solid rgba(30, 58, 138, 0.2);
+    transition: all 0.2s ease;
+    vertical-align: middle;
+}
+
+.chat-link-badge:hover {
+    background: var(--deep-blue);
+    color: var(--white);
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(30, 58, 138, 0.25);
+}
+
+.chat-link-badge svg {
+    flex-shrink: 0;
+}
+
+.chat-notice-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 3px solid var(--gold-accent);
+    border-radius: 4px 8px 8px 4px;
+    padding: 9px 12px;
+    font-size: 12px;
+    color: #92400e;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.chat-notice-box svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--gold-accent);
+}
+
 /* Waktu: redup, rapi di pojok */
 .message-time {
     font-size: 10px;

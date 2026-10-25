@@ -159,6 +159,83 @@ function appendUserMessage(text) {
     scrollToBottom();
 }
 
+function formatBotResponse(text) {
+    if (!text) return '';
+
+    // 1. Pisahkan catatan / bantuan / footer bila ada
+    let noteText = '';
+    const notePattern = /(Jika mengalami kendala[^\n]+|Catatan:[^\n]+|Bantuan:[^\n]+|\*Bantuan[^\n]+|\*Catatan[^\n]+|\*Silakan unduh[^\n]+|\*Dokumen[^\n]+|\*Template[^\n]+|\*Kalender[^\n]+|\*Formulir[^\n]+)/i;
+    const noteMatch = text.match(notePattern);
+    let mainText = text;
+    if (noteMatch) {
+        noteText = noteMatch[0];
+        mainText = text.replace(noteMatch[0], '').trim();
+    }
+
+    // 2. Deteksi poin / langkah bernomor (1) atau 1. atau bullet - / •)
+    let intro = '';
+    let steps = [];
+    const stepSplitRegex = /(?:^|\s+)(?:\d+[\.\)]|[•\-])\s+/;
+    if (stepSplitRegex.test(mainText)) {
+        const parts = mainText.split(/(?=(?:^|\s+)(?:\d+[\.\)]|[•\-])\s+)/);
+        intro = parts[0].trim();
+        for (let i = 1; i < parts.length; i++) {
+            let item = parts[i].trim();
+            if (item) {
+                const numMatch = item.match(/^(\d+[\.\)]|[•\-])\s+(.*)/s);
+                if (numMatch) {
+                    let badge = numMatch[1].replace(')', '.');
+                    steps.push({ badge: badge, text: numMatch[2].trim() });
+                } else {
+                    steps.push({ badge: '•', text: item });
+                }
+            }
+        }
+    } else {
+        intro = mainText;
+    }
+
+    function formatInline(str) {
+        let safe = escapeHtml(str);
+        // Tebal: **teks** -> <strong>teks</strong>
+        safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // Miring: *teks* -> <em>teks</em>
+        safe = safe.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        // URL otomatis jadi tautan interaktif yang rapi
+        safe = safe.replace(/(https?:\/\/[^\s<\)]+)/g, function(url) {
+            let clean = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="chat-link-badge"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>${clean}</a>`;
+        });
+        return safe.replace(/\n/g, '<br>');
+    }
+
+    let html = '';
+    if (intro) {
+        html += `<div class="chat-intro-text">${formatInline(intro)}</div>`;
+    }
+
+    if (steps.length > 0) {
+        html += `<div class="chat-steps-container">`;
+        steps.forEach(s => {
+            html += `<div class="chat-step-item">
+                <span class="chat-step-badge">${s.badge}</span>
+                <span class="chat-step-content">${formatInline(s.text)}</span>
+            </div>`;
+        });
+        html += `</div>`;
+    }
+
+    if (noteText) {
+        let cleanNote = noteText.replace(/^[\*\_]+|[\*\_]+$/g, '').trim();
+        html += `<div class="chat-notice-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span>${formatInline(cleanNote)}</span>
+        </div>`;
+    }
+
+    return html;
+}
+
 function appendBotMessage(text, fileLink = null) {
     const wrapper = document.createElement('div');
     wrapper.className = 'message-wrapper bot-message';
@@ -166,9 +243,10 @@ function appendBotMessage(text, fileLink = null) {
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
     
-    const p = document.createElement('p');
-    p.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
-    bubble.appendChild(p);
+    const content = document.createElement('div');
+    content.className = 'bot-response-content';
+    content.innerHTML = formatBotResponse(text);
+    bubble.appendChild(content);
     
     if (fileLink && fileLink.trim() !== '') {
         const downloadLink = document.createElement('a');
